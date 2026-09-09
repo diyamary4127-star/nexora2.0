@@ -3,7 +3,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_shadows.dart';
 import '../../data/services/mock_data_service.dart';
 import '../profile/profile_view_edit_screen.dart';
-import '../admin/developer_admin_screen.dart';
+import '../chat/messages_inbox_sheet.dart';
 import 'tabs/students_tab.dart';
 import 'tabs/clubs_tab.dart';
 import 'tabs/activity_tracker_tab.dart';
@@ -53,12 +53,22 @@ class _DiscoverScreenState extends State<DiscoverScreen> with SingleTickerProvid
     );
   }
 
+  void _openMessagesInbox(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const MessagesInboxSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: _dataService,
       builder: (context, _) {
         final currentUser = _dataService.currentUser;
+        final totalMessages = _dataService.totalMessages;
 
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -106,7 +116,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> with SingleTickerProvid
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                currentUser?.isClubAdmin == true ? 'Club Admin Hub' : 'Campus Hub',
+                                currentUser?.isClubAdmin == true ? 'Club Leader Portal' : 'Campus Hub',
                                 style: const TextStyle(
                                   fontSize: 11,
                                   color: AppColors.textSecondary,
@@ -120,24 +130,37 @@ class _DiscoverScreenState extends State<DiscoverScreen> with SingleTickerProvid
 
                       const Spacer(),
 
-                      // Admin Console Quick Shortcut
+                      // Direct Messages / Chat Shortcut with badge
                       IconButton(
-                        tooltip: 'Developer Stats',
-                        icon: Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: AppShadows.soft3dChip,
-                          ),
-                          child: const Icon(Icons.insights_rounded, color: AppColors.primary, size: 18),
+                        tooltip: 'Direct Messages',
+                        icon: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(7),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: AppShadows.soft3dChip,
+                              ),
+                              child: const Icon(Icons.chat_bubble_outline_rounded, color: AppColors.primary, size: 18),
+                            ),
+                            if (totalMessages > 0)
+                              Positioned(
+                                top: -2,
+                                right: -2,
+                                child: Container(
+                                  width: 9,
+                                  height: 9,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const DeveloperAdminScreen()),
-                          );
-                        },
+                        onPressed: () => _openMessagesInbox(context),
                       ),
 
                       // Profile Avatar Icon (View & Edit Profile)

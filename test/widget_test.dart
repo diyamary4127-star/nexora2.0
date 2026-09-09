@@ -40,8 +40,8 @@ void main() {
 
     // Verify S2 Screen
     expect(find.text('Join the CET\nCommunity'), findsOneWidget);
-    expect(find.text('STEP 1 OF 2 : CREDENTIALS'), findsOneWidget);
-    expect(find.text('Continue to Profile Setup (S3)'), findsOneWidget);
+    expect(find.text('COLLEGE CREDENTIALS'), findsOneWidget);
+    expect(find.text('Continue to Profile Setup'), findsOneWidget);
   });
 
   testWidgets('Directly open S4 Discover and verify Students, Clubs, and Activity Tracker tabs', (WidgetTester tester) async {

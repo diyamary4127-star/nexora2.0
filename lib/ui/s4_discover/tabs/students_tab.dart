@@ -6,6 +6,7 @@ import '../../../core/widgets/soft_3d_chip.dart';
 import '../../../core/widgets/soft_3d_text_field.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/services/mock_data_service.dart';
+import '../../chat/chat_screen.dart';
 import '../widgets/student_detail_modal.dart';
 
 /// Students Tab: Connect with students based on matching hobbies, interests, branch & semester
@@ -334,37 +335,67 @@ class _StudentsTabState extends State<StudentsTab> {
                               ),
                             ),
 
-                            // Quick Connect Button
-                            GestureDetector(
-                              onTap: () => _dataService.toggleConnect(student.id),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                                decoration: BoxDecoration(
-                                  color: isConnected ? AppColors.iceBlue : AppColors.primary,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: isConnected ? AppShadows.soft3dChip : AppShadows.soft3dChipActive,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      isConnected ? Icons.check_rounded : Icons.person_add_rounded,
-                                      size: 14,
-                                      color: isConnected ? AppColors.primaryDark : Colors.white,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      isConnected ? 'Connected' : 'Connect',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w700,
-                                        color: isConnected ? AppColors.primaryDark : Colors.white,
+                            // Connect and Message Action Row
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isConnected) ...[
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (_) => ChatScreen(peer: student)),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(7),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.iceBlue,
+                                        shape: BoxShape.circle,
+                                        boxShadow: AppShadows.soft3dChip,
+                                      ),
+                                      child: const Icon(
+                                        Icons.chat_bubble_outline_rounded,
+                                        size: 15,
+                                        color: AppColors.primary,
                                       ),
                                     ),
-                                  ],
+                                  ),
+                                  const SizedBox(width: 6),
+                                ],
+                                GestureDetector(
+                                  onTap: () => _dataService.toggleConnect(student.id),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 150),
+                                    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                                    decoration: BoxDecoration(
+                                      color: isConnected ? AppColors.surfaceSoft : AppColors.primary,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: isConnected ? Border.all(color: AppColors.lightBlueTint) : null,
+                                      boxShadow: isConnected ? null : AppShadows.soft3dChipActive,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          isConnected ? Icons.check_rounded : Icons.person_add_rounded,
+                                          size: 13,
+                                          color: isConnected ? AppColors.success : Colors.white,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          isConnected ? 'Connected' : 'Connect',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w700,
+                                            color: isConnected ? AppColors.textPrimary : Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ],
                         ),

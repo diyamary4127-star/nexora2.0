@@ -229,42 +229,72 @@ class _ClubsTabState extends State<ClubsTab> {
 
                       const SizedBox(height: 14),
 
-                      // Join Request & Follow Buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 6,
-                            child: Soft3DButton(
-                              text: isJoined
-                                  ? 'Joined Member'
-                                  : (isPending ? 'Request Pending' : 'Send Join Request'),
-                              height: 38,
-                              type: isJoined
-                                  ? Soft3DButtonType.secondary
-                                  : (isPending ? Soft3DButtonType.outline : Soft3DButtonType.primary),
-                              icon: isJoined
-                                  ? Icons.check_circle_rounded
-                                  : (isPending ? Icons.hourglass_top_rounded : Icons.group_add_rounded),
-                              onPressed: () {
-                                _dataService.toggleClubJoinRequest(club.id);
-                              },
+                      // Join Request & Follow Buttons or Leader Panel
+                      if (club.leaderId == currentUser?.id || (currentUser?.isClubAdmin == true && currentUser?.clubName?.toLowerCase() == club.name.toLowerCase())) ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Soft3DButton(
+                                text: 'Host Workshop',
+                                height: 38,
+                                type: Soft3DButtonType.primary,
+                                icon: Icons.add_rounded,
+                                onPressed: () {
+                                  _openClubDetail(context, club);
+                                },
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            flex: 4,
-                            child: Soft3DButton(
-                              text: isFollowing ? 'Following' : 'Follow',
-                              height: 38,
-                              type: isFollowing ? Soft3DButtonType.secondary : Soft3DButtonType.outline,
-                              icon: isFollowing ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
-                              onPressed: () {
-                                _dataService.toggleClubFollow(club.id);
-                              },
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Soft3DButton(
+                                text: 'Manage Team',
+                                height: 38,
+                                type: Soft3DButtonType.secondary,
+                                icon: Icons.shield_rounded,
+                                onPressed: () {
+                                  _openClubDetail(context, club);
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ] else ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 6,
+                              child: Soft3DButton(
+                                text: isJoined
+                                    ? 'Joined Member'
+                                    : (isPending ? 'Request Pending' : 'Send Join Request'),
+                                height: 38,
+                                type: isJoined
+                                    ? Soft3DButtonType.secondary
+                                    : (isPending ? Soft3DButtonType.outline : Soft3DButtonType.primary),
+                                icon: isJoined
+                                    ? Icons.check_circle_rounded
+                                    : (isPending ? Icons.hourglass_top_rounded : Icons.group_add_rounded),
+                                onPressed: () {
+                                  _dataService.toggleClubJoinRequest(club.id);
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 4,
+                              child: Soft3DButton(
+                                text: isFollowing ? 'Following' : 'Follow',
+                                height: 38,
+                                type: isFollowing ? Soft3DButtonType.secondary : Soft3DButtonType.outline,
+                                icon: isFollowing ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
+                                onPressed: () {
+                                  _dataService.toggleClubFollow(club.id);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),

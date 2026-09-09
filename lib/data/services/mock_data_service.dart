@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/club_model.dart';
 import '../models/event_model.dart';
 import '../models/activity_model.dart';
+import '../models/chat_message_model.dart';
 
 /// Centralized In-Memory Mock Data Store with Reactive State
 class MockDataService extends ChangeNotifier {
@@ -18,6 +20,7 @@ class MockDataService extends ChangeNotifier {
   List<ClubModel> _clubs = [];
   List<EventModel> _events = [];
   List<ActivityModel> _activities = [];
+  final Map<String, List<ChatMessage>> _conversations = {};
 
   // Getters
   UserModel? get currentUser => _currentUser;
@@ -33,9 +36,10 @@ class MockDataService extends ChangeNotifier {
   int get totalClubs => _clubs.length;
   int get totalEvents => _events.length;
   int get totalActivities => _activities.length;
+  int get totalMessages => _conversations.values.fold(0, (sum, list) => sum + list.length);
 
   void _initMockData() {
-    // Current user default (demo student)
+    // Current user default (Aditya Varma - CSE S6)
     _currentUser = UserModel(
       id: 'usr_me',
       name: 'Aditya Varma',
@@ -43,13 +47,13 @@ class MockDataService extends ChangeNotifier {
       semester: 6,
       degree: 'B.Tech',
       branch: 'Computer Science & Engg',
-      bio: 'Full-stack builder passionate about Flutter, Distributed Systems, and campus hackathons. Always up for filter coffee & coding!',
+      bio: 'Full-stack builder passionate about Flutter, Distributed Systems, and campus hackathons. Usually hanging out around Gazebo or PG Lab with a filter coffee!',
       hobbies: ['Coding', 'AI / ML', 'Hackathons', 'Gaming', 'UI/UX Design'],
       isClubAdmin: false,
       role: UserRole.student,
       avatarColor: const Color(0xFF2563EB),
-      connectedUserIds: ['usr_1', 'usr_3'],
-      followingClubIds: ['club_1', 'club_3'],
+      connectedUserIds: ['usr_1', 'usr_3', 'usr_4'],
+      followingClubIds: ['club_1', 'club_3', 'club_4'],
       joinedClubIds: ['club_1'],
       registeredEventIds: ['evt_1', 'evt_3'],
     );
@@ -63,7 +67,7 @@ class MockDataService extends ChangeNotifier {
         semester: 6,
         degree: 'B.Tech',
         branch: 'Electronics & Comm Engg',
-        bio: 'Robotics enthusiast, IoT hardware tinkerer, and amateur classical singer. Building autonomous rover prototypes @ CET.',
+        bio: 'Robotics enthusiast, IoT hardware tinkerer, and amateur vocalist. Organizing drone challenges for Drishti tech fest @ Gazebo stage.',
         hobbies: ['Robotics', 'IoT', 'Music', 'Coding', 'Photography'],
         isClubAdmin: true,
         clubName: 'CET Robotics Club',
@@ -78,7 +82,7 @@ class MockDataService extends ChangeNotifier {
         semester: 4,
         degree: 'B.Tech',
         branch: 'Mechanical Engg',
-        bio: 'Formula Student aerodynamics lead & 3D CAD designer. Love Formula 1, sim racing, and robotics mechanisms.',
+        bio: 'Formula Student aerodynamics lead & 3D CAD designer. Always up for football at CET Ground and chai near Archie Corner.',
         hobbies: ['3D Modeling', 'Automotive', 'Gaming', 'Robotics', 'Sports'],
         isClubAdmin: false,
         role: UserRole.student,
@@ -91,7 +95,7 @@ class MockDataService extends ChangeNotifier {
         semester: 6,
         degree: 'B.Tech',
         branch: 'Computer Science & Engg',
-        bio: 'Competitive programmer, open-source contributor, and lead of CodeCET. Let us build cool algorithms together!',
+        bio: 'Competitive programmer, open-source contributor, and lead of CodeCET. Coordinating the 36-hr HackFest for Drishti 2026.',
         hobbies: ['Coding', 'Algorithms', 'AI / ML', 'Debating', 'Literature'],
         isClubAdmin: true,
         clubName: 'CodeCET',
@@ -106,7 +110,7 @@ class MockDataService extends ChangeNotifier {
         semester: 8,
         degree: 'B.Arch',
         branch: 'Architecture',
-        bio: 'Final year Architecture student fascinated by sustainable urban spaces, minimalist sketching, and graphic design.',
+        bio: 'Final year Architecture student. Co-organizing Mashi Arts & Design Fest at Archie Corner. Passionate about sustainable urban spaces and sketching.',
         hobbies: ['UI/UX Design', 'Photography', 'Art & Sketching', 'Literature'],
         isClubAdmin: false,
         role: UserRole.student,
@@ -119,7 +123,7 @@ class MockDataService extends ChangeNotifier {
         semester: 4,
         degree: 'B.Tech',
         branch: 'Electrical & Electronics Engg',
-        bio: 'Vocalist at Dhwani Music Club. Electric vehicle circuitry researcher and keyboard player.',
+        bio: 'Lead vocalist at Dhwani Music Club. Catch our sunset acoustic jamming sessions every Thursday at Gazebo stage & Dhwani Main Stage.',
         hobbies: ['Music', 'Dance', 'Photography', 'IoT'],
         isClubAdmin: true,
         clubName: 'Dhwani - CET Music Club',
@@ -134,7 +138,7 @@ class MockDataService extends ChangeNotifier {
         semester: 2,
         degree: 'B.Tech',
         branch: 'Civil Engg',
-        bio: 'First year CETian exploring clubs, debate society, football, and student startups.',
+        bio: 'First year CETian exploring debate society, football team, and student startups for Disha fest.',
         hobbies: ['Sports', 'Debating', 'Literature', 'Hackathons'],
         isClubAdmin: false,
         role: UserRole.student,
@@ -147,7 +151,7 @@ class MockDataService extends ChangeNotifier {
         semester: 6,
         degree: 'MCA',
         branch: 'Computer Applications',
-        bio: 'Cloud architecture & cybersecurity enthusiast. Passionate about organizing student hackathons and workshops.',
+        bio: 'Cloud architecture & cybersecurity enthusiast. Organizing workshop tracks for Disha techno-management summit.',
         hobbies: ['Coding', 'AI / ML', 'UI/UX Design', 'Gaming'],
         isClubAdmin: false,
         role: UserRole.student,
@@ -161,7 +165,7 @@ class MockDataService extends ChangeNotifier {
         id: 'club_1',
         name: 'CodeCET',
         category: 'Technical',
-        description: 'The official Computer Science & Coding Club of CET. We organize weekly coding leagues, open source jams, web3 & AI bootcamps, and the annual CET HackFest.',
+        description: 'The official Computer Science & Coding Club of CET. Hosting the flagship Drishti Hackathon, weekly algorithmic leagues, and open-source jams in PG Lab.',
         leaderId: 'usr_3',
         leaderName: 'Sneha Krishnan',
         coLeaderNames: ['Arjun Ramesh', 'Gokul Krishna'],
@@ -171,13 +175,13 @@ class MockDataService extends ChangeNotifier {
         followerCount: 1250,
         icon: Icons.code_rounded,
         themeColor: const Color(0xFF2563EB),
-        tags: ['Coding', 'AI / ML', 'Hackathons', 'Open Source'],
+        tags: ['Drishti 2026', 'Coding', 'AI / ML', 'Hackathons'],
       ),
       ClubModel(
         id: 'club_2',
         name: 'CET Robotics Club',
         category: 'Technical',
-        description: 'Pioneering robotics, computer vision, autonomous rovers, and drone technology at CET. Hands-on hardware labs, PCB design workshops, and national rover challenge teams.',
+        description: 'Pioneering robotics, autonomous rovers, and drone technology at CET. Outdoor drone flight testing at Gazebo and national rover challenge preparations.',
         leaderId: 'usr_1',
         leaderName: 'Ananya Nair',
         coLeaderNames: ['Vipin Das'],
@@ -187,13 +191,13 @@ class MockDataService extends ChangeNotifier {
         followerCount: 890,
         icon: Icons.precision_manufacturing_rounded,
         themeColor: const Color(0xFF0284C7),
-        tags: ['Robotics', 'IoT', 'Hardware', 'Drones'],
+        tags: ['Robotics', 'Drishti 2026', 'IoT', 'Drones'],
       ),
       ClubModel(
         id: 'club_3',
         name: 'Dhwani - CET Music Club',
         category: 'Cultural',
-        description: 'The heartbeat of music in CET. From classical fusion to rock bands, acoustic unplugged sessions on Diamond Jubilee stage, and inter-college cultural fests.',
+        description: 'The musical heartbeat of CET. Organizers of Dhwani Cultural Fest, Battle of the Bands on the iconic Dhwani Stage, and Thursday sunset jamming sessions at the Gazebo.',
         leaderId: 'usr_5',
         leaderName: 'Devika Pillai',
         coLeaderNames: ['Shankar G'],
@@ -203,13 +207,13 @@ class MockDataService extends ChangeNotifier {
         followerCount: 2100,
         icon: Icons.music_note_rounded,
         themeColor: const Color(0xFF8B5CF6),
-        tags: ['Music', 'Instruments', 'Vocals', 'Concerts'],
+        tags: ['Dhwani Fest', 'Music', 'Live Bands', 'Gazebo Jam'],
       ),
       ClubModel(
         id: 'club_4',
         name: 'IEDC CET',
         category: 'Entrepreneurship',
-        description: 'Innovation and Entrepreneurship Development Centre. Fostering student startups, incubation funding, venture pitch competitions, and industry mentorship at CET.',
+        description: 'Innovation and Entrepreneurship Development Centre. Organizers of Disha Techno-Management Summit, student startup seed incubation, and investor pitch sessions.',
         leaderId: 'usr_iedc',
         leaderName: 'Prof. Harikrishnan (Faculty) / Vivek S',
         coLeaderNames: ['Alen John', 'Pooja Varma'],
@@ -219,13 +223,13 @@ class MockDataService extends ChangeNotifier {
         followerCount: 1780,
         icon: Icons.rocket_launch_rounded,
         themeColor: const Color(0xFFF59E0B),
-        tags: ['Startups', 'Innovation', 'Hackathons', 'Mentorship'],
+        tags: ['Disha Conclave', 'Startups', 'Incubation', 'Pitchathons'],
       ),
       ClubModel(
         id: 'club_5',
         name: 'CET Literary & Debating Society (LDS)',
         category: 'Cultural',
-        description: 'Engaging minds in parliamentary debates, creative writing, elocution, model UNs, and quizzes. Elevating CET voice across national podiums.',
+        description: 'Parliamentary debates, elocution, creative writing, and quizzing. Organizers of Mashi Arts & Literary Fest exhibitions at Archie Corner.',
         leaderId: 'usr_lds',
         leaderName: 'Tarun Mathew',
         coLeaderNames: ['Riya Philip'],
@@ -235,13 +239,13 @@ class MockDataService extends ChangeNotifier {
         followerCount: 620,
         icon: Icons.record_voice_over_rounded,
         themeColor: const Color(0xFFEC4899),
-        tags: ['Debating', 'Literature', 'Quizzing', 'Public Speaking'],
+        tags: ['Mashi Fest', 'Debating', 'Literature', 'Quizzing'],
       ),
       ClubModel(
         id: 'club_6',
         name: 'CET Sports & Athletics Council',
         category: 'Sports',
-        description: 'Uniting sports athletes across Football, Basketball, Badminton, Cricket, and Athletics. Annual inter-branch tournaments & university leagues.',
+        description: 'Inter-department leagues and university sports tournaments across Football, Basketball, Badminton, and Athletics @ CET Stadium & Courts.',
         leaderId: 'usr_sports',
         leaderName: 'Vishnu Prasad',
         coLeaderNames: ['Abhishek S'],
@@ -251,82 +255,96 @@ class MockDataService extends ChangeNotifier {
         followerCount: 1400,
         icon: Icons.sports_soccer_rounded,
         themeColor: const Color(0xFF10B981),
-        tags: ['Sports', 'Fitness', 'Football', 'Tournaments'],
+        tags: ['Sports', 'Football', 'Athletics', 'Tournaments'],
       ),
     ];
 
-    // Campus Events & Workshops
+    // Campus Events & Fests (Drishti, Dhwani, Disha, Mashi, Gazebo sessions)
     _events = [
       EventModel(
         id: 'evt_1',
-        title: 'CET AI & LLM Agent Hackathon 2026',
+        title: 'Drishti 2026: 36-Hour National AI & Systems Hackathon',
         clubId: 'club_1',
-        clubName: 'CodeCET',
-        category: 'Hackathon',
+        clubName: 'CodeCET & Drishti Team',
+        category: 'Drishti Fest',
         dateTime: DateTime.now().add(const Duration(days: 3)),
-        timeString: 'Sat, 10:00 AM - Sun, 4:00 PM',
+        timeString: 'Fri, 6:00 PM - Sun, 6:00 AM',
         venue: 'CS Seminar Hall & PG Lab, CET',
-        description: '30-hour offline hackathon to build intelligent autonomous agents, multi-modal apps, and developer tools with mentorship and prizes worth ₹50,000!',
-        registeredCount: 142,
+        description: 'Flagship national hackathon of Drishti 2026 Tech Fest. Build next-gen AI agents and decentralized systems with mentors and ₹1,00,000 prize pool!',
+        registeredCount: 248,
         icon: Icons.psychology_rounded,
         accentColor: const Color(0xFF2563EB),
       ),
       EventModel(
         id: 'evt_2',
-        title: 'Hands-on Autonomous Drone Flight Workshop',
-        clubId: 'club_2',
-        clubName: 'CET Robotics Club',
-        category: 'Workshop',
-        dateTime: DateTime.now().add(const Duration(days: 6)),
-        timeString: 'Tue, 3:30 PM - 6:00 PM',
-        venue: 'Robotics Lab, Mech Dept',
-        description: 'Learn ROS2, sensor calibration, optical flow positioning, and autopilot PID tuning on quadcopter drones.',
-        registeredCount: 68,
-        icon: Icons.flight_takeoff_rounded,
-        accentColor: const Color(0xFF0284C7),
-      ),
-      EventModel(
-        id: 'evt_3',
-        title: 'Dhwani Acoustic Unplugged & Open Mic',
+        title: 'Gazebo Open Mic & Sunset Jam Session',
         clubId: 'club_3',
         clubName: 'Dhwani - CET Music Club',
-        category: 'Cultural',
-        dateTime: DateTime.now().add(const Duration(days: 8)),
-        timeString: 'Fri, 5:00 PM - 7:30 PM',
-        venue: 'Diamond Jubilee Open Amphitheatre',
-        description: 'Unwind with soulful vocals, acoustic guitar jams, beatboxing, and open mic performances by fellow CETians as the sun sets.',
-        registeredCount: 215,
-        icon: Icons.mic_external_on_rounded,
+        category: 'Campus Culture',
+        dateTime: DateTime.now().add(const Duration(days: 2)),
+        timeString: 'Thursday, 5:00 PM - 7:00 PM',
+        venue: 'Gazebo Mini Stage & Lawn',
+        description: 'Acoustic unplugged guitars, beatboxing, and open jamming at the Gazebo as classes wrap up. Bring your instruments or just come enjoy!',
+        registeredCount: 185,
+        icon: Icons.music_note_rounded,
         accentColor: const Color(0xFF8B5CF6),
       ),
       EventModel(
+        id: 'evt_3',
+        title: 'Dhwani 2026: Battle of the Bands (Pro-Show Preliminary)',
+        clubId: 'club_3',
+        clubName: 'Dhwani Cultural Fest Committee',
+        category: 'Dhwani Fest',
+        dateTime: DateTime.now().add(const Duration(days: 7)),
+        timeString: 'Next Friday, 5:30 PM - 9:30 PM',
+        venue: 'Dhwani Stage (Main Open-Air Amphitheatre)',
+        description: 'The annual musical clash of top collegiate rock and fusion bands on the iconic Dhwani Stage leading to the grand cultural fest pro-night.',
+        registeredCount: 420,
+        icon: Icons.mic_external_on_rounded,
+        accentColor: const Color(0xFFEC4899),
+      ),
+      EventModel(
         id: 'evt_4',
-        title: 'Startup Pitch & Seed Grant Orientation',
+        title: 'Disha 2026: Student Venture Pitch & Startup Conclave',
         clubId: 'club_4',
         clubName: 'IEDC CET',
-        category: 'Orientation',
-        dateTime: DateTime.now().add(const Duration(days: 12)),
-        timeString: 'Thu, 4:00 PM - 5:30 PM',
-        venue: 'Main Auditorium, CET',
-        description: 'Discover how to pitch student tech prototypes for Kerala Startup Mission (KSUM) grant support and CET Incubation space.',
-        registeredCount: 95,
-        icon: Icons.monetization_on_rounded,
+        category: 'Disha Fest',
+        dateTime: DateTime.now().add(const Duration(days: 10)),
+        timeString: 'Tue, 10:00 AM - 4:30 PM',
+        venue: 'CET Main Auditorium',
+        description: 'Annual techno-management and venture pitching fest. Present student prototypes to KSUM venture partners and angel investors.',
+        registeredCount: 160,
+        icon: Icons.rocket_launch_rounded,
         accentColor: const Color(0xFFF59E0B),
+      ),
+      EventModel(
+        id: 'evt_5',
+        title: 'Mashi 2026: Archie Corner Design Sprint & Art Expo',
+        clubId: 'club_5',
+        clubName: 'CET LDS & Architecture Association',
+        category: 'Mashi Fest',
+        dateTime: DateTime.now().add(const Duration(days: 14)),
+        timeString: 'Saturday, 11:00 AM - 5:00 PM',
+        venue: 'Archie Corner Courtyard',
+        description: 'Live sketching competitions, UI/UX design sprints, calligraphy workshops, and architectural photo galleries across Archie Corner.',
+        registeredCount: 130,
+        icon: Icons.palette_rounded,
+        accentColor: const Color(0xFF10B981),
       ),
     ];
 
-    // Activity Tracker Default Items (Club Events + Private Friend Activities)
+    // Activity Tracker Default Items (Club Events + Private Friend Activities with CET spots)
     _activities = [
       ActivityModel(
         id: 'act_1',
-        title: 'CET AI & LLM Agent Hackathon 2026',
+        title: 'Drishti 2026: 36-Hour AI Hackathon Team Prep',
         type: ActivityType.clubEvent,
         hostName: 'CodeCET',
         clubId: 'club_1',
         dateTime: DateTime.now().add(const Duration(days: 3)),
-        timeDisplay: 'Sat, 10:00 AM - Sun, 4:00 PM',
-        location: 'CS Seminar Hall & PG Lab',
-        description: 'Registered for the 30-hour offline hackathon. Team formation done.',
+        timeDisplay: 'Fri, 6:00 PM - Sun, 6:00 AM',
+        location: 'CS PG Lab & Seminar Hall',
+        description: 'Registered for Drishti flagship hackathon. Team formed with Sneha and Aditya.',
         invitedFriends: ['Sneha Krishnan', 'Aditya Varma'],
         isCompleted: false,
         isReminderSet: true,
@@ -334,13 +352,13 @@ class MockDataService extends ChangeNotifier {
       ),
       ActivityModel(
         id: 'act_2',
-        title: 'DSA LeetCode Grinding & Algo Prep',
+        title: 'Gazebo Project Brainstorming & Coding',
         type: ActivityType.studyGroup,
         hostName: 'Aditya Varma (You)',
         dateTime: DateTime.now().add(const Duration(days: 1)),
-        timeDisplay: 'Tomorrow, 5:30 PM - 7:00 PM',
-        location: 'Central Library 2nd Floor Study Room',
-        description: 'Solving Dynamic Programming & Graph problems on LeetCode with friends before placement tests.',
+        timeDisplay: 'Tomorrow, 4:30 PM - 6:30 PM',
+        location: 'Gazebo Mini Stage / Lawn',
+        description: 'Informal Flutter app prototyping and algorithm review over snacks at the Gazebo.',
         invitedFriends: ['Sneha Krishnan', 'Ananya Nair'],
         isCompleted: false,
         isReminderSet: true,
@@ -348,41 +366,103 @@ class MockDataService extends ChangeNotifier {
       ),
       ActivityModel(
         id: 'act_3',
-        title: 'Dhwani Acoustic Unplugged & Open Mic',
+        title: 'Dhwani Stage Sunset Jam & Band Soundcheck',
         type: ActivityType.clubEvent,
         hostName: 'Dhwani CET',
         clubId: 'club_3',
-        dateTime: DateTime.now().add(const Duration(days: 8)),
-        timeDisplay: 'Next Friday, 5:00 PM - 7:30 PM',
-        location: 'Diamond Jubilee Amphitheatre',
-        description: 'Attending with hostel friends to watch live band performances.',
+        dateTime: DateTime.now().add(const Duration(days: 7)),
+        timeDisplay: 'Next Friday, 5:30 PM - 9:30 PM',
+        location: 'Dhwani Stage (Main Amphitheatre)',
+        description: 'Live performance and support for inter-college band preliminary rounds.',
         invitedFriends: ['Devika Pillai', 'Rohit Menon'],
         isCompleted: false,
         isReminderSet: true,
-        badgeColor: const Color(0xFF8B5CF6),
+        badgeColor: const Color(0xFFEC4899),
       ),
       ActivityModel(
         id: 'act_4',
-        title: 'Weekend 5v5 Football Friendly @ CET Ground',
-        type: ActivityType.sports,
-        hostName: 'Kiran Joseph',
+        title: 'Archie Corner UI/UX Design & Coffee Sprint',
+        type: ActivityType.privatePlan,
+        hostName: 'Farhan Ali',
         dateTime: DateTime.now().add(const Duration(days: 4)),
-        timeDisplay: 'Sunday, 6:30 AM - 8:00 AM',
-        location: 'CET Football Ground',
-        description: 'Inter-hostel morning football friendly match.',
-        invitedFriends: ['Rohit Menon', 'Farhan Ali', 'Aditya Varma'],
+        timeDisplay: 'Saturday, 3:00 PM - 5:00 PM',
+        location: 'Archie Corner Courtyard',
+        description: 'Wireframing Mashi fest posters and design system components.',
+        invitedFriends: ['Farhan Ali', 'Aditya Varma'],
         isCompleted: false,
         isReminderSet: false,
         badgeColor: const Color(0xFFF59E0B),
+      ),
+    ];
+
+    // Seed realistic friend chat conversations
+    _conversations['usr_3'] = [
+      ChatMessage(
+        id: 'msg_1',
+        senderId: 'usr_3',
+        senderName: 'Sneha Krishnan',
+        recipientId: 'usr_me',
+        text: 'Hey Aditya! Are you ready for the Drishti Hackathon this weekend?',
+        timestamp: DateTime.now().subtract(const Duration(minutes: 45)),
+        isMe: false,
+      ),
+      ChatMessage(
+        id: 'msg_2',
+        senderId: 'usr_me',
+        senderName: 'Aditya Varma',
+        recipientId: 'usr_3',
+        text: 'Hey Sneha! Yes, almost done setting up the repo. Shall we meet at Gazebo tomorrow around 4:30 PM to finalize our architecture?',
+        timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
+        isMe: true,
+      ),
+      ChatMessage(
+        id: 'msg_3',
+        senderId: 'usr_3',
+        senderName: 'Sneha Krishnan',
+        recipientId: 'usr_me',
+        text: 'Sounds great! I will bring the problem statement breakdowns. See you at Gazebo!',
+        timestamp: DateTime.now().subtract(const Duration(minutes: 20)),
+        isMe: false,
+      ),
+    ];
+
+    _conversations['usr_1'] = [
+      ChatMessage(
+        id: 'msg_4',
+        senderId: 'usr_1',
+        senderName: 'Ananya Nair',
+        recipientId: 'usr_me',
+        text: 'Hi Aditya, we are testing the obstacle avoidance drone tomorrow afternoon near the Gazebo lawn if you want to check it out.',
+        timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+        isMe: false,
+      ),
+      ChatMessage(
+        id: 'msg_5',
+        senderId: 'usr_me',
+        senderName: 'Aditya Varma',
+        recipientId: 'usr_1',
+        text: 'Awesome Ananya! Would love to see the ROS2 telemetry in action.',
+        timestamp: DateTime.now().subtract(const Duration(hours: 1)),
+        isMe: true,
+      ),
+    ];
+
+    _conversations['usr_4'] = [
+      ChatMessage(
+        id: 'msg_6',
+        senderId: 'usr_4',
+        senderName: 'Farhan Ali',
+        recipientId: 'usr_me',
+        text: 'Aditya, we are setting up the Mashi fest installations at Archie Corner. Drop by when you are free!',
+        timestamp: DateTime.now().subtract(const Duration(hours: 5)),
+        isMe: false,
       ),
     ];
   }
 
   // --- Auth & Session Methods ---
 
-  /// Quick Login with predefined or custom credentials
   void login(String email, String password) {
-    // Check if matches existing student or create active session
     final existing = _students.where((u) => u.email.toLowerCase() == email.toLowerCase()).firstOrNull;
     if (existing != null) {
       _currentUser = existing;
@@ -394,7 +474,7 @@ class MockDataService extends ChangeNotifier {
         semester: 4,
         degree: 'B.Tech',
         branch: 'Computer Science & Engg',
-        bio: 'Enthusiastic CETian ready to explore campus opportunities and connect with fellow students.',
+        bio: 'Enthusiastic CETian exploring campus opportunities, clubs, and fests.',
         hobbies: ['Coding', 'Gaming', 'Music'],
         role: UserRole.student,
       );
@@ -402,7 +482,6 @@ class MockDataService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Switch to Demo Account for fast testing
   void loginAsDemo(String roleType) {
     if (roleType == 'clubLeader') {
       _currentUser = UserModel(
@@ -412,12 +491,12 @@ class MockDataService extends ChangeNotifier {
         semester: 6,
         degree: 'B.Tech',
         branch: 'Computer Science & Engg',
-        bio: 'Lead of CodeCET. Passionate about distributed systems, algorithm design, and building student developer communities at CET.',
+        bio: 'Lead of CodeCET. Passionate about distributed systems, Drishti fest hackathons, and building student developer communities at CET.',
         hobbies: ['Coding', 'Algorithms', 'AI / ML', 'Debating', 'Literature'],
         isClubAdmin: true,
         clubName: 'CodeCET',
         clubCategory: 'Technical',
-        clubDescription: 'The official Computer Science & Coding Club of CET. We organize weekly coding leagues, open source jams, web3 & AI bootcamps.',
+        clubDescription: 'The official Computer Science & Coding Club of CET. Organizers of the Drishti National Hackathon.',
         role: UserRole.clubLeader,
         avatarColor: const Color(0xFF10B981),
         connectedUserIds: ['usr_1', 'usr_2', 'usr_5'],
@@ -450,13 +529,13 @@ class MockDataService extends ChangeNotifier {
         semester: 6,
         degree: 'B.Tech',
         branch: 'Computer Science & Engg',
-        bio: 'Full-stack builder passionate about Flutter, Distributed Systems, and campus hackathons. Always up for filter coffee & coding!',
+        bio: 'Full-stack builder passionate about Flutter, Distributed Systems, and campus hackathons. Usually hanging out around Gazebo or PG Lab with a filter coffee!',
         hobbies: ['Coding', 'AI / ML', 'Hackathons', 'Gaming', 'UI/UX Design'],
         isClubAdmin: false,
         role: UserRole.student,
         avatarColor: const Color(0xFF2563EB),
-        connectedUserIds: ['usr_1', 'usr_3'],
-        followingClubIds: ['club_1', 'club_3'],
+        connectedUserIds: ['usr_1', 'usr_3', 'usr_4'],
+        followingClubIds: ['club_1', 'club_3', 'club_4'],
         joinedClubIds: ['club_1'],
         registeredEventIds: ['evt_1', 'evt_3'],
       );
@@ -464,7 +543,6 @@ class MockDataService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Signup new draft user profile (S2 -> S3)
   void startSignup({required String email, required String password}) {
     _currentUser = UserModel(
       id: 'usr_${DateTime.now().millisecondsSinceEpoch}',
@@ -481,11 +559,9 @@ class MockDataService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Save completed profile (from S3 or Profile Edit)
   void saveProfile(UserModel updatedUser) {
     _currentUser = updatedUser;
 
-    // If this user is a club admin and created a new club, add or update club in list
     if (updatedUser.isClubAdmin && (updatedUser.clubName?.isNotEmpty ?? false)) {
       final existingClubIndex = _clubs.indexWhere((c) => c.name.toLowerCase() == updatedUser.clubName!.toLowerCase() || c.leaderId == updatedUser.id);
       if (existingClubIndex != -1) {
@@ -519,7 +595,6 @@ class MockDataService extends ChangeNotifier {
 
   // --- Student Interactions ---
 
-  /// Toggle connect / request with a student
   void toggleConnect(String targetUserId) {
     if (_currentUser == null) return;
     final connected = List<String>.from(_currentUser!.connectedUserIds);
@@ -534,7 +609,6 @@ class MockDataService extends ChangeNotifier {
 
   // --- Club Interactions ---
 
-  /// Toggle sending a join request to a club
   void toggleClubJoinRequest(String clubId) {
     if (_currentUser == null) return;
     final pendingJoins = List<String>.from(_currentUser!.pendingClubJoinIds);
@@ -544,7 +618,7 @@ class MockDataService extends ChangeNotifier {
       joined.remove(clubId);
     } else if (pendingJoins.contains(clubId)) {
       pendingJoins.remove(clubId);
-      joined.add(clubId); // Auto-approve simulation for demo ease!
+      joined.add(clubId);
     } else {
       pendingJoins.add(clubId);
     }
@@ -556,7 +630,6 @@ class MockDataService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Toggle following a club for updates
   void toggleClubFollow(String clubId) {
     if (_currentUser == null) return;
     final following = List<String>.from(_currentUser!.followingClubIds);
@@ -582,7 +655,6 @@ class MockDataService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Add Co-Leader to a club
   void addClubCoLeader(String clubId, String name) {
     final idx = _clubs.indexWhere((c) => c.id == clubId);
     if (idx != -1) {
@@ -595,7 +667,6 @@ class MockDataService extends ChangeNotifier {
     }
   }
 
-  /// Add Moderator to a club
   void addClubModerator(String clubId, String name) {
     final idx = _clubs.indexWhere((c) => c.id == clubId);
     if (idx != -1) {
@@ -610,18 +681,15 @@ class MockDataService extends ChangeNotifier {
 
   // --- Events & Activity Tracker ---
 
-  /// Register for an event and automatically add it to Activity Tracker
   void registerForEvent(EventModel event) {
     if (_currentUser == null) return;
     final registered = List<String>.from(_currentUser!.registeredEventIds);
 
     if (registered.contains(event.id)) {
       registered.remove(event.id);
-      // Remove from activities
       _activities.removeWhere((a) => a.id == 'act_evt_${event.id}' || a.title == event.title);
     } else {
       registered.add(event.id);
-      // Automatically add to Activity Tracker
       final newActivity = ActivityModel(
         id: 'act_evt_${event.id}',
         title: event.title,
@@ -644,13 +712,35 @@ class MockDataService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Add a private activity or study session with friends
+  void createClubEvent(EventModel event) {
+    _events.insert(0, event);
+
+    // Automatically add to Activity Tracker for the leader as the Host
+    final leaderActivity = ActivityModel(
+      id: 'act_evt_${event.id}',
+      title: event.title,
+      type: ActivityType.clubEvent,
+      hostName: '${event.clubName} (You are Host)',
+      clubId: event.clubId,
+      dateTime: event.dateTime,
+      timeDisplay: event.timeString,
+      location: event.venue,
+      description: event.description,
+      invitedFriends: [_currentUser?.name ?? 'You'],
+      isCompleted: false,
+      isReminderSet: true,
+      badgeColor: event.accentColor,
+    );
+    _activities.insert(0, leaderActivity);
+
+    notifyListeners();
+  }
+
   void addPrivateActivity(ActivityModel activity) {
     _activities.insert(0, activity);
     notifyListeners();
   }
 
-  /// Toggle activity reminder
   void toggleActivityReminder(String activityId) {
     final idx = _activities.indexWhere((a) => a.id == activityId);
     if (idx != -1) {
@@ -661,7 +751,6 @@ class MockDataService extends ChangeNotifier {
     }
   }
 
-  /// Toggle activity completion status
   void toggleActivityCompleted(String activityId) {
     final idx = _activities.indexWhere((a) => a.id == activityId);
     if (idx != -1) {
@@ -672,8 +761,62 @@ class MockDataService extends ChangeNotifier {
     }
   }
 
-  /// Reset all data to mock baseline
+  // --- Chat / Direct Messaging Feature ---
+
+  List<ChatMessage> getMessagesWith(String peerId) {
+    return _conversations[peerId] ?? [];
+  }
+
+  Map<String, List<ChatMessage>> get allConversations => Map.unmodifiable(_conversations);
+
+  void sendMessage({required String recipientId, required String text}) {
+    if (_currentUser == null || text.trim().isEmpty) return;
+
+    final myMsg = ChatMessage(
+      id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
+      senderId: _currentUser!.id,
+      senderName: _currentUser!.name.isNotEmpty ? _currentUser!.name : 'You',
+      recipientId: recipientId,
+      text: text.trim(),
+      timestamp: DateTime.now(),
+      isMe: true,
+    );
+
+    _conversations.putIfAbsent(recipientId, () => []);
+    _conversations[recipientId]!.add(myMsg);
+    notifyListeners();
+
+    // Simulate smart friendly peer response after a brief realistic pause
+    final peer = _students.where((s) => s.id == recipientId).firstOrNull;
+    if (peer != null) {
+      Timer(const Duration(milliseconds: 900), () {
+        final responses = [
+          'Awesome! Let us meet up near Gazebo and discuss this.',
+          'Got it! Looking forward to collaborating for Drishti 2026.',
+          'Sounds great! I will share the notes before our session.',
+          'Perfect! See you at Archie Corner soon.',
+          'Thanks for reaching out! Let us get started on this project.',
+        ];
+        final replyText = responses[(_conversations[recipientId]!.length) % responses.length];
+
+        final replyMsg = ChatMessage(
+          id: 'msg_reply_${DateTime.now().millisecondsSinceEpoch}',
+          senderId: peer.id,
+          senderName: peer.name,
+          recipientId: _currentUser!.id,
+          text: replyText,
+          timestamp: DateTime.now(),
+          isMe: false,
+        );
+
+        _conversations[recipientId]!.add(replyMsg);
+        notifyListeners();
+      });
+    }
+  }
+
   void resetToMockData() {
+    _conversations.clear();
     _initMockData();
     notifyListeners();
   }

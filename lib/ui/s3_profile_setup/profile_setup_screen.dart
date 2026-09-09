@@ -99,7 +99,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     _bioController = TextEditingController(
       text: user?.bio.isNotEmpty == true
           ? user!.bio
-          : 'Passionate CETian eager to learn, build innovative projects, and connect with fellow students.',
+          : 'Passionate CETian eager to learn, build innovative projects, and connect with fellow students around campus.',
     );
     _customHobbyController = TextEditingController();
 
@@ -243,7 +243,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Step Indicator
+                // Clean Header Pill
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -255,10 +255,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.looks_two_rounded, size: 16, color: AppColors.primary),
-                      SizedBox(width: 4),
+                      Icon(Icons.badge_rounded, size: 16, color: AppColors.primary),
+                      SizedBox(width: 6),
                       Text(
-                        'STEP 2 OF 2 : CAMPUS IDENTITY',
+                        'CAMPUS IDENTITY',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -282,7 +282,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Fill in your academic and personal details so peers and clubs can find you.',
+                  'Fill in your academic and personal details so peers, study groups, and clubs can discover you.',
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.textSecondary,
@@ -304,7 +304,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                               color: AppColors.iceBlue,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Icon(Icons.badge_rounded, color: AppColors.primary, size: 20),
+                            child: const Icon(Icons.person_outline_rounded, color: AppColors.primary, size: 20),
                           ),
                           const SizedBox(width: 10),
                           const Text(
@@ -532,7 +532,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       const SizedBox(height: 14),
                       Soft3DTextField(
                         label: 'Description / Bio',
-                        hintText: 'Share your background, what you love working on, favorite CET spots, or what you are looking to collaborate on...',
+                        hintText: 'Share your background, favorite hangout spots like Gazebo or Archie Corner, and what you are looking to collaborate on...',
                         controller: _bioController,
                         maxLines: 4,
                         minLines: 3,
@@ -572,7 +572,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'Tap tags to select topics you are interested in. We use these to match you with peers in S4 Discover!',
+                        'Tap tags to select topics you are interested in. We use these to match you with peers in Discover!',
                         style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                       ),
                       const SizedBox(height: 14),
@@ -758,7 +758,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                         Soft3DTextField(
                           label: 'Club Portfolio & Team Description',
-                          hintText: 'Describe the vision, past achievements, workshops, and team structure of the club...',
+                          hintText: 'Describe the vision, fests, workshops, and leadership structure of the club...',
                           controller: _clubDescController,
                           maxLines: 4,
                           minLines: 3,
@@ -769,7 +769,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                         const SizedBox(height: 16),
 
-                        // Verification Image / Document Upload Simulator
+                        // Verification Proof Upload Simulator
                         const Text(
                           'Upload Verification Proof / ID',
                           style: TextStyle(
@@ -827,9 +827,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
                 const SizedBox(height: 24),
 
-                // Save & Submit Button
+                // Clean Save & Submit Button
                 Soft3DButton(
-                  text: 'Save Profile & Enter Discover Hub (S4)',
+                  text: 'Save Profile & Explore Campus',
                   icon: Icons.check_circle_outline_rounded,
                   onPressed: _onSaveProfile,
                 ),

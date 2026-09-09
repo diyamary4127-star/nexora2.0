@@ -78,7 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Step Indicator Pill
+                // Clean Category Badge
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -90,10 +90,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.looks_one_rounded, size: 16, color: AppColors.primary),
-                      SizedBox(width: 4),
+                      Icon(Icons.lock_person_rounded, size: 16, color: AppColors.primary),
+                      SizedBox(width: 6),
                       Text(
-                        'STEP 1 OF 2 : CREDENTIALS',
+                        'COLLEGE CREDENTIALS',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -195,7 +195,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       const SizedBox(height: 24),
                       Soft3DButton(
-                        text: 'Continue to Profile Setup (S3)',
+                        text: 'Continue to Profile Setup',
                         icon: Icons.arrow_forward_rounded,
                         onPressed: _onProceedToProfileSetup,
                       ),

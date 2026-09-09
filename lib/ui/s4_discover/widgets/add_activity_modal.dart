@@ -192,9 +192,48 @@ class _AddActivityModalState extends State<AddActivityModal> {
 
             const SizedBox(height: 14),
 
+            // Quick CET Locations
+            const Text(
+              'Location / Venue',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                'Gazebo Lawn',
+                'Archie Corner',
+                'Dhwani Stage',
+                'Central Library',
+                'CS PG Lab',
+                'CET Ground',
+              ].map((spot) {
+                final isSelected = _locationController.text == spot;
+                return GestureDetector(
+                  onTap: () => setState(() => _locationController.text = spot),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isSelected ? AppColors.primary : AppColors.iceBlue,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      spot,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected ? Colors.white : AppColors.primaryDark,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 10),
+
             Soft3DTextField(
-              label: 'Location / Venue',
-              hintText: 'e.g. CS Lab 3 / Library Discussion Room',
+              hintText: 'e.g. Gazebo / Archie Corner / CS Lab 3',
               controller: _locationController,
               prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.primary),
             ),

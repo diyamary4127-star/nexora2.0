@@ -305,11 +305,11 @@ class ProfileViewEditScreen extends StatelessWidget {
                     ),
                   ],
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 20),
 
-                  // Quick Edit Button
+                  // Clean Edit Button
                   Soft3DButton(
-                    text: 'Edit Profile Details (S3)',
+                    text: 'Edit Profile Details',
                     icon: Icons.edit_note_rounded,
                     onPressed: () {
                       Navigator.push(
@@ -319,57 +319,6 @@ class ProfileViewEditScreen extends StatelessWidget {
                         ),
                       );
                     },
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  // Switch Persona Quick Bar (for easy grading / testing)
-                  Soft3DCard(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Switch Demo Persona',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Soft3DButton(
-                                text: 'Student',
-                                height: 36,
-                                type: Soft3DButtonType.secondary,
-                                onPressed: () => dataService.loginAsDemo('student'),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Soft3DButton(
-                                text: 'Club Lead',
-                                height: 36,
-                                type: Soft3DButtonType.secondary,
-                                onPressed: () => dataService.loginAsDemo('clubLeader'),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Soft3DButton(
-                                text: 'Admin',
-                                height: 36,
-                                type: Soft3DButtonType.secondary,
-                                onPressed: () => dataService.loginAsDemo('developerAdmin'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
                   ),
 
                   const SizedBox(height: 14),

@@ -5,8 +5,9 @@ import '../../../core/widgets/soft_3d_button.dart';
 import '../../../core/widgets/soft_3d_card.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/services/mock_data_service.dart';
+import '../../chat/chat_screen.dart';
 
-/// Modal bottom sheet to view a student's full profile & connect
+/// Modal bottom sheet to view a student's full profile & connect/chat
 class StudentDetailModal extends StatelessWidget {
   final UserModel student;
 
@@ -232,19 +233,38 @@ class StudentDetailModal extends StatelessWidget {
 
               const SizedBox(height: 22),
 
-              // Connect Button
+              // Connect and Message Action Buttons
               Row(
                 children: [
                   Expanded(
+                    flex: isConnected ? 6 : 10,
                     child: Soft3DButton(
-                      text: isConnected ? 'Connected (Tap to Disconnect)' : 'Send Connect Request',
+                      text: isConnected ? 'Connected' : 'Send Connect Request',
                       type: isConnected ? Soft3DButtonType.secondary : Soft3DButtonType.primary,
-                      icon: isConnected ? Icons.how_to_reg_rounded : Icons.person_add_alt_1_rounded,
+                      icon: isConnected ? Icons.check_rounded : Icons.person_add_alt_1_rounded,
                       onPressed: () {
                         dataService.toggleConnect(student.id);
                       },
                     ),
                   ),
+                  if (isConnected) ...[
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 4,
+                      child: Soft3DButton(
+                        text: 'Chat',
+                        type: Soft3DButtonType.primary,
+                        icon: Icons.chat_bubble_rounded,
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => ChatScreen(peer: student)),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ],
